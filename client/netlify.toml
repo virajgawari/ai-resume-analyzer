@@ -1,0 +1,11 @@
+[build]
+  publish = "build"
+  command = "npm run build"
+
+[build.environment]
+  REACT_APP_API_URL = "https://resume-analyzer-7ynlp9fng-virajgawaris-projects.vercel.app"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
