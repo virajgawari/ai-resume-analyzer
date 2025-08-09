@@ -21,7 +21,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/resume-analyzer', {
+// In production, require MONGODB_URI to be set to avoid accidental localhost fallback
+const isProduction = process.env.NODE_ENV === 'production';
+const mongoUri = process.env.MONGODB_URI || (isProduction ? '' : 'mongodb://localhost:27017/resume-analyzer');
+if (isProduction && !mongoUri) {
+  console.error('Fatal: MONGODB_URI is not set in production environment');
+  throw new Error('MONGODB_URI is required in production');
+}
+
+mongoose.connect(mongoUri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
@@ -51,10 +59,13 @@ app.get('/api/health', async (req, res) => {
   const clientBuildPath = path.join(__dirname, '../client/build');
   if (fs.existsSync(clientBuildPath)) {
     app.use(express.static(clientBuildPath));
+    // Ensure API routes still work; fallback everything else to index.html
     app.get('*', (req, res, next) => {
       if (req.path.startsWith('/api/')) return next();
       res.sendFile(path.join(clientBuildPath, 'index.html'));
     });
+  } else {
+    console.warn('Client build not found. Run "npm run build --prefix client" to generate it.');
   }
 })();
 

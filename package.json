@@ -6,11 +6,12 @@
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "nodemon server/index.js",
-    "client": "cd client && npm start",
-    "build": "cd client && npm install && npm run build",
+    "client": "npm run start --prefix client",
+    "build": "npm ci --prefix client && npm run build --prefix client",
+    "vercel-build": "npm ci && npm ci --prefix client && npm run build --prefix client",
     "start": "node server/index.js",
-    "install-client": "cd client && npm install",
-    "install-server": "npm install",
+    "install-client": "npm ci --prefix client",
+    "install-server": "npm ci",
     "install-all": "npm run install-server && npm run install-client"
   },
   "keywords": [
@@ -22,6 +23,9 @@
   ],
   "author": "Your Name",
   "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "bcryptjs": "^2.4.3",
