@@ -272,3 +272,5 @@ If you encounter any issues or have questions:
 ---
 
 **Built with ❤️ using the MERN stack and Tailwind CSS**
+#   a i - r e s u m e - a n a l y z e r  
+ 
